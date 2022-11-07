@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shikishaseller/widgets/custome_input.dart';
 import 'package:shikishaseller/widgets/info_text.dart';
 
 class HomePage extends ConsumerWidget {
@@ -7,6 +8,9 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController descriptionController = TextEditingController();
+    TextEditingController priceController = TextEditingController();
     ThemeData theme = Theme.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
@@ -39,7 +43,80 @@ class HomePage extends ConsumerWidget {
                 style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all(Colors.orange.shade600)),
-                onPressed: () {},
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) => Form(
+                          child: AlertDialog(
+                            title: Center(
+                                child: InfoText(
+                              text: "Add new Product",
+                              textStyle: theme.textTheme.headline6!
+                                  .copyWith(color: Colors.orange.shade600),
+                            )),
+                            scrollable: true,
+                            content: Column(
+                              children: [
+                                CustomeInput(
+                                    controller: nameController, label: "Name"),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                CustomeInput(
+                                    controller: descriptionController,
+                                    label: "Description"),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                CustomeInput(
+                                    controller: priceController,
+                                    label: "Price"),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.red.shade600)),
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        Icons.cancel,
+                                        size: 30,
+                                        color: Colors.white,
+                                      ),
+                                      label: InfoText(
+                                        text: "Cancel",
+                                        textStyle: theme.textTheme.bodyLarge!
+                                            .copyWith(color: Colors.white),
+                                      )),
+                                  ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.green.shade600)),
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        Icons.check,
+                                        size: 30,
+                                        color: Colors.white,
+                                      ),
+                                      label: InfoText(
+                                        text: "Cancel",
+                                        textStyle: theme.textTheme.bodyLarge!
+                                            .copyWith(color: Colors.white),
+                                      ))
+                                ],
+                              )
+                            ],
+                          ),
+                        )),
                 icon: const Icon(Icons.add, color: Colors.white, size: 30),
                 label: InfoText(
                   text: "New Product",
