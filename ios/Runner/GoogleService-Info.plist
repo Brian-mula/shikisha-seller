@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>549601478533-8eds0303miqccsdapuposvebumk65e6c.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.549601478533-8eds0303miqccsdapuposvebumk65e6c</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>549601478533-nr70r0o6fv9uddhrjcvipn484a2gn279.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCY7rPxJQ4-f0R_C4uiTZeQ5qCqoTUH3V8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>549601478533</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.shikishaseller</string>
+	<key>PROJECT_ID</key>
+	<string>shikisha-63928</string>
+	<key>STORAGE_BUCKET</key>
+	<string>shikisha-63928.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:549601478533:ios:2a97a369d22b4fbe76e6ec</string>
+</dict>
+</plist>
