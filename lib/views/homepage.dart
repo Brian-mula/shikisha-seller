@@ -108,7 +108,7 @@ class HomePage extends ConsumerWidget {
                                         color: Colors.white,
                                       ),
                                       label: InfoText(
-                                        text: "Cancel",
+                                        text: "Save",
                                         textStyle: theme.textTheme.bodyLarge!
                                             .copyWith(color: Colors.white),
                                       ))
