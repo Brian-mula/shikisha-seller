@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shikishaseller/firebase_options.dart';
+import 'package:shikishaseller/views/auth_checker.dart';
 import 'package:shikishaseller/views/homepage.dart';
 import 'package:shikishaseller/views/login.dart';
 
@@ -27,10 +28,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // home: const HomePage(),
-      initialRoute: "/",
+      initialRoute: "/authchecker",
       routes: {
         "/": (context) => const LoginPage(),
-        "/home": (context) => const HomePage()
+        "/home": (context) => const HomePage(),
+        "/authchecker": (context) => const AuthChecker()
       },
     );
   }

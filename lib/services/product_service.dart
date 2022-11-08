@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shikishaseller/models/products_model.dart';
-import 'package:shikishaseller/models/user_model.dart';
 
 class ProductsService {
   bool isExisting = false;
@@ -15,19 +15,32 @@ class ProductsService {
     return snapshot.docs.map((doc) => ProductModel.fromSnapshot(doc)).toList();
   }
 
-  Future<List<ProductModel>> userProducts(UserModel user) async {
+  Future<List<ProductModel>> userProducts(String? id) async {
     QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
         .collection("products")
-        .where('phone', isEqualTo: user.phone)
+        .doc(id)
+        .collection("userproducts")
         .get();
+
     isExisting = true;
     return snapshot.docs.map((doc) => ProductModel.fromSnapshot(doc)).toList();
   }
 
   // ! add a product
-  Future<void> addProduct(ProductModel product, UserModel user) async {
+  Future<void> addProduct(
+      ProductModel product, String? id, BuildContext context) async {
     try {
-      await _products.doc(user.id).set({
+      // await _products.doc(user.id).set({
+      // "title": product.title,
+      // "category": product.category,
+      // "description": product.description,
+      // "price": product.price,
+      // "image": product.img,
+      // "seller": product.seller,
+      // "phone": product.phone
+      // });
+      await _products.doc(id).collection("userproducts").add({
+        "isVerified": product.isVerified,
         "title": product.title,
         "category": product.category,
         "description": product.description,
@@ -36,6 +49,7 @@ class ProductsService {
         "seller": product.seller,
         "phone": product.phone
       });
+      Navigator.of(context).pop();
     } catch (e) {
       print(e.toString());
     }

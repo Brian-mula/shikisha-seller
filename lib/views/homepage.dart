@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shikishaseller/models/products_model.dart';
+import 'package:shikishaseller/providers/products_provider.dart';
 import 'package:shikishaseller/widgets/custome_input.dart';
 import 'package:shikishaseller/widgets/info_text.dart';
 
@@ -12,6 +15,9 @@ class HomePage extends ConsumerWidget {
     TextEditingController descriptionController = TextEditingController();
     TextEditingController priceController = TextEditingController();
     ThemeData theme = Theme.of(context);
+    final userProducts = ref.watch(userProduct);
+    final product = ref.watch(productProvider);
+    FirebaseAuth auth = FirebaseAuth.instance;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -85,7 +91,9 @@ class HomePage extends ConsumerWidget {
                                           backgroundColor:
                                               MaterialStateProperty.all(
                                                   Colors.red.shade600)),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
                                       icon: const Icon(
                                         Icons.cancel,
                                         size: 30,
@@ -101,7 +109,24 @@ class HomePage extends ConsumerWidget {
                                           backgroundColor:
                                               MaterialStateProperty.all(
                                                   Colors.green.shade600)),
-                                      onPressed: () {},
+                                      onPressed: () async {
+                                        ProductModel productModel =
+                                            ProductModel(
+                                          isVerified: false,
+                                          title: nameController.text,
+                                          category: "category",
+                                          description:
+                                              descriptionController.text,
+                                          img: "img",
+                                          price:
+                                              int.parse(priceController.text),
+                                          seller: auth.currentUser!.phoneNumber,
+                                        );
+                                        await product.addProduct(
+                                            productModel,
+                                            auth.currentUser!.phoneNumber,
+                                            context);
+                                      },
                                       icon: const Icon(
                                         Icons.check,
                                         size: 30,
@@ -124,38 +149,45 @@ class HomePage extends ConsumerWidget {
                       theme.textTheme.bodyLarge!.copyWith(color: Colors.white),
                 )),
             SizedBox(
-              height: 650,
-              child: ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.only(top: 15),
-                      child: ListTile(
-                        leading: Container(
-                          height: 150,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                              image: const DecorationImage(
-                                  image: NetworkImage(
-                                      "https://images.unsplash.com/photo-1528795259021-d8c86e14354c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTd8fG1vYmlsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"),
-                                  fit: BoxFit.cover)),
-                        ),
-                        title: const InfoText(text: "Product title"),
-                        subtitle: InfoText(
-                          text: "Approved",
-                          textStyle: theme.textTheme.bodyLarge!
-                              .copyWith(color: Colors.green.shade600),
-                        ),
-                        trailing: InfoText(
-                          text: "Ksh. 30000",
-                          textStyle: theme.textTheme.bodyLarge!
-                              .copyWith(color: Colors.orange.shade600),
-                        ),
-                      ),
-                    );
-                  }),
-            )
+                height: 650,
+                child: userProducts.when(
+                    data: (data) {
+                      return ListView.builder(
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: const EdgeInsets.only(top: 15),
+                              child: ListTile(
+                                leading: Container(
+                                  height: 150,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      image: const DecorationImage(
+                                          image: NetworkImage(
+                                              "https://images.unsplash.com/photo-1528795259021-d8c86e14354c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTd8fG1vYmlsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"),
+                                          fit: BoxFit.cover)),
+                                ),
+                                title: const InfoText(text: "Product title"),
+                                subtitle: InfoText(
+                                  text: "Approved",
+                                  textStyle: theme.textTheme.bodyLarge!
+                                      .copyWith(color: Colors.green.shade600),
+                                ),
+                                trailing: InfoText(
+                                  text: "Ksh. 30000",
+                                  textStyle: theme.textTheme.bodyLarge!
+                                      .copyWith(color: Colors.orange.shade600),
+                                ),
+                              ),
+                            );
+                          });
+                    },
+                    error: (error, stackTrace) =>
+                        InfoText(text: error.toString()),
+                    loading: () => const Center(
+                          child: CircularProgressIndicator(),
+                        )))
           ],
         ),
       ),

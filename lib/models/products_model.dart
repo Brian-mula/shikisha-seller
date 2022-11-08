@@ -10,8 +10,8 @@ class ProductModel {
   bool isVerified;
   String img;
   int price;
-  String seller;
-  String phone;
+  String? seller;
+  String? phone;
 
   ProductModel(
       {this.id,
@@ -21,8 +21,8 @@ class ProductModel {
       required this.description,
       required this.img,
       required this.price,
-      required this.seller,
-      required this.phone});
+      this.seller,
+      this.phone});
 
   Map<String, dynamic> toSnapshot() {
     return {
