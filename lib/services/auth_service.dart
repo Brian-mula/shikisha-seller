@@ -15,4 +15,6 @@ class AuthService {
       print(e.toString());
     }
   }
+
+  Stream<User?> get authStateChanges => auth.authStateChanges();
 }
