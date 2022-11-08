@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shikishaseller/models/products_model.dart';
 import 'package:shikishaseller/models/user_model.dart';
 
-class ProductsContoller {
+class ProductsService {
   bool isExisting = false;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference _products =
