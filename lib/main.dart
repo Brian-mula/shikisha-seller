@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "/authchecker",
       routes: {
         "/": (context) => const LoginPage(),
-        "/home": (context) => const HomePage(),
+        "/home": (context) => const HomeScreen(),
         "/authchecker": (context) => const AuthChecker()
       },
     );

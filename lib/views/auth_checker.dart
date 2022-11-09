@@ -14,7 +14,7 @@ class AuthChecker extends ConsumerWidget {
 
     return authState.when(
         data: (data) {
-          if (data != null) return const HomePage();
+          if (data != null) return const HomeScreen();
           return const LoginPage();
         },
         error: (e, trace) => Center(

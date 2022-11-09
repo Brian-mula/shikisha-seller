@@ -1,23 +1,59 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:shikishaseller/models/products_model.dart';
 import 'package:shikishaseller/providers/products_provider.dart';
 import 'package:shikishaseller/widgets/custome_input.dart';
 import 'package:shikishaseller/widgets/info_text.dart';
 
-class HomePage extends ConsumerWidget {
-  const HomePage({super.key});
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    TextEditingController nameController = TextEditingController();
-    TextEditingController descriptionController = TextEditingController();
-    TextEditingController priceController = TextEditingController();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  String? imgUrl;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+  Future<void> uploadImage(String? inputSource) async {
+    final picker = ImagePicker();
+    XFile? pickedImage;
+    try {
+      pickedImage = await picker.pickImage(
+          source: inputSource == 'camera'
+              ? ImageSource.camera
+              : ImageSource.gallery);
+      final String fileName = path.basename(pickedImage!.name);
+      File file = File(pickedImage.path);
+      var snapshot =
+          await storage.ref().child("images/$fileName").putFile(file);
+
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      setState(() {
+        imgUrl = downloadUrl;
+      });
+    } catch (e) {}
+  }
+
+  @override
+  Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     final userProducts = ref.watch(userProduct);
     final product = ref.watch(productProvider);
-    FirebaseAuth auth = FirebaseAuth.instance;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -79,6 +115,19 @@ class HomePage extends ConsumerWidget {
                                 const SizedBox(
                                   height: 20,
                                 ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                ElevatedButton.icon(
+                                    onPressed: () async {
+                                      await uploadImage('');
+                                    },
+                                    icon: const Icon(Icons.file_copy),
+                                    label: InfoText(
+                                      text: "Upload image",
+                                      textStyle: theme.textTheme.bodyLarge!
+                                          .copyWith(color: Colors.white),
+                                    ))
                               ],
                             ),
                             actions: [
@@ -117,7 +166,7 @@ class HomePage extends ConsumerWidget {
                                           category: "category",
                                           description:
                                               descriptionController.text,
-                                          img: "img",
+                                          img: imgUrl!,
                                           price:
                                               int.parse(priceController.text),
                                           seller: auth.currentUser!.phoneNumber,
@@ -153,7 +202,7 @@ class HomePage extends ConsumerWidget {
                 child: userProducts.when(
                     data: (data) {
                       return ListView.builder(
-                          itemCount: 5,
+                          itemCount: data.length,
                           itemBuilder: (context, index) {
                             return Container(
                               margin: const EdgeInsets.only(top: 15),
@@ -163,19 +212,23 @@ class HomePage extends ConsumerWidget {
                                   width: 100,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(6),
-                                      image: const DecorationImage(
-                                          image: NetworkImage(
-                                              "https://images.unsplash.com/photo-1528795259021-d8c86e14354c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTd8fG1vYmlsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"),
+                                      image: DecorationImage(
+                                          image: NetworkImage(data[index].img),
                                           fit: BoxFit.cover)),
                                 ),
-                                title: const InfoText(text: "Product title"),
+                                title: InfoText(text: data[index].title),
                                 subtitle: InfoText(
-                                  text: "Approved",
-                                  textStyle: theme.textTheme.bodyLarge!
-                                      .copyWith(color: Colors.green.shade600),
+                                  text: data[index].isVerified
+                                      ? "Approved"
+                                      : "Not Approved",
+                                  textStyle: data[index].isVerified
+                                      ? theme.textTheme.bodyLarge!.copyWith(
+                                          color: Colors.green.shade600)
+                                      : theme.textTheme.bodyLarge!
+                                          .copyWith(color: Colors.red.shade600),
                                 ),
                                 trailing: InfoText(
-                                  text: "Ksh. 30000",
+                                  text: "Ksh. ${data[index].price}",
                                   textStyle: theme.textTheme.bodyLarge!
                                       .copyWith(color: Colors.orange.shade600),
                                 ),
